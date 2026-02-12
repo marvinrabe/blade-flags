@@ -1,0 +1,73 @@
+name: Update Flags
+
+on:
+  pull_request:
+    paths:
+      - 'package.json'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  update:
+    if: github.actor == 'dependabot[bot]' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.3
+
+      - name: Install dependencies
+        run: |
+          npm install
+          composer install
+
+      - name: Regenerate flag SVGs
+        run: composer generate
+
+      - name: Commit changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add resources/svg/
+          git diff --staged --quiet || git commit -m "Regenerate flag SVGs"
+          git push
+
+  test:
+    needs: update
+    uses: ./.github/workflows/tests.yml
+
+  release:
+    needs: test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Get flag-icons version
+        id: version
+        run: echo "version=$(node -p "require('./package.json').dependencies['flag-icons']")" >> $GITHUB_OUTPUT
+
+      - name: Merge PR
+        if: github.event_name == 'pull_request'
+        run: gh pr merge "${{ github.event.pull_request.number }}" --merge
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create tag
+        run: |
+          git tag "${{ steps.version.outputs.version }}"
+          git push origin "${{ steps.version.outputs.version }}"

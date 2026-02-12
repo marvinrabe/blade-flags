@@ -1,5 +1,8 @@
 # Blade Flags
 
+[![Latest Version on Packagist](https://img.shields.io/packagist/v/marvinrabe/blade-flags.svg?style=flat-square)](https://packagist.org/packages/marvinrabe/blade-flags)
+[![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/marvinrabe/blade-flags/run-tests.yml?branch=main)](https://github.com/marvinrabe/blade-flags/actions?query=workflow%3ATests+branch%3Amain)
+[![Total Downloads](https://img.shields.io/packagist/dt/marvinrabe/blade-flags.svg?style=flat-square)](https://packagist.org/packages/marvinrabe/blade-flags)
 
 A package to easily make use of country flags in your Laravel Blade views.
 
