@@ -10,8 +10,7 @@ use Orchestra\Testbench\TestCase;
 
 class CompilesIconsTest extends TestCase
 {
-    /** @test */
-    public function it_compiles_a_single_anonymous_component()
+    public function test_it_compiles_a_single_anonymous_component(): void
     {
         $result = svg('flag-4x3-us')->toHtml();
 
@@ -31,8 +30,7 @@ class CompilesIconsTest extends TestCase
         $this->assertSame($expected, $result);
     }
 
-    /** @test */
-    public function it_can_add_classes_to_icons()
+    public function test_it_can_add_classes_to_icons(): void
     {
         $result = svg('flag-4x3-us', 'w-6 h-6 text-gray-500')->toHtml();
 
@@ -51,8 +49,7 @@ class CompilesIconsTest extends TestCase
         $this->assertSame($expected, $result);
     }
 
-    /** @test */
-    public function it_can_add_styles_to_icons()
+    public function test_it_can_add_styles_to_icons(): void
     {
         $result = svg('flag-4x3-us', ['style' => 'color: #555'])->toHtml();
 
@@ -71,7 +68,15 @@ class CompilesIconsTest extends TestCase
         $this->assertSame($expected, $result);
     }
 
-    protected function getPackageProviders($app)
+    public function test_it_compiles_a_square_flag_component(): void
+    {
+        $result = svg('flag-1x1-us')->toHtml();
+
+        $this->assertStringContainsString('viewBox="0 0 512 512"', $result);
+        $this->assertStringContainsString('id="flag-icons-us"', $result);
+    }
+
+    protected function getPackageProviders($app): array
     {
         return [
             BladeIconsServiceProvider::class,
